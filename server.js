@@ -20,6 +20,7 @@ function bothTimes (unixTime, naturalTime) {
 app.get('/:time', function (req, res){
   
   var dateMoment;
+  var finalTime;
   
   if(moment(parseInt(req.params.time*1000,0)).isValid())
   {
@@ -34,7 +35,14 @@ app.get('/:time', function (req, res){
   
   var unixTimeMoment = parseUnixMoment(dateMoment);
   
-  var finalTime = bothTimes(unixTimeMoment, normalTimeMoment);
+  try
+  {
+    finalTime = bothTimes(unixTimeMoment, normalTimeMoment);
+  }
+  catch (e)
+  {
+    finalTime = bothTimes(null, null);
+  }
   
   res.send(finalTime);
 });
