@@ -1,31 +1,42 @@
 const express = require('express');
 const app = express();
+const moment = require('moment');
 
-function parsetime (time) {
+function parseTimeMoment (time) {
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   
-  var naturalDate = JSON.stringify(months[time.getMonth()] + ' ' + time.getDate() + ', ' + time.getFullYear());
+  var naturalDate = JSON.stringify(months[time.month()] + ' ' + time.date() + ', ' + time.year());
   return naturalDate;
 }
 
-function unixtime (time) {
-  return time.getTime();
+function parseUnixMoment (time) {
+  return time.unix();
 }
 
 function bothTimes (unixTime, naturalTime) {
     return { unix: JSON.parse(unixTime), natural: JSON.parse(naturalTime) };
 }
 
-app.get('/:time', function (req, res) {
-  var unixDate = new Date(parseInt(req.params.time,0));
-  var normalDate = new Date(parseInt(req.params.time*1000,0));
+app.get('/:time', function (req, res){
   
-  var unix_time = unixtime(unixDate);
-  var normal_time = parsetime(normalDate);
+  var dateMoment;
   
-  var finalTime = bothTimes(unix_time, normal_time);
+  if(moment(parseInt(req.params.time*1000,0)).isValid())
+  {
+    dateMoment = moment(parseInt(req.params.time*1000,0));
+  }
+  else
+  {
+    dateMoment = moment(req.params.time);
+  }
   
-  res.send( finalTime );
+  var normalTimeMoment = parseTimeMoment(dateMoment);
+  
+  var unixTimeMoment = parseUnixMoment(dateMoment);
+  
+  var finalTime = bothTimes(unixTimeMoment, normalTimeMoment);
+  
+  res.send(finalTime);
 });
 
 app.listen(8080, function () {
