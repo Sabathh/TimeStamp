@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const moment = require('moment');
 
+var port = process.env.PORT || 8080;
+
 function parseTimeMoment (time) {
   var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   
@@ -47,6 +49,6 @@ app.get('/:time', function (req, res){
   res.send(finalTime);
 });
 
-app.listen(8080, function () {
+app.listen(port, function () {
   console.log('Test app on https://api-projects-sabathh.c9users.io/1515455516');
 })
